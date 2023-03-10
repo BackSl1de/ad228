@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Добавить пользователя</title>
+
+  </title>
+</head>
+<body>
+<h4>Вы точно хотите удалить этого пользователя?</h4>
+<form th:href="@{/deleteUser}" th:method="post" th:object="${user}">
+    <input type="submit" value="Удалить"/>
+</form>
+
+</body>
+</html>

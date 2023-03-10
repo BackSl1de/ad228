@@ -1,10 +1,10 @@
-package dimas.dao;
+package dimas.service;
 
 import dimas.model.User;
 
 import java.util.List;
 
-public interface UserDao {
+public interface UserService {
     List<User> getAllUsers();
     void addUser(User user);
     void updateUser(User user);

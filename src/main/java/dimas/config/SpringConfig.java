@@ -1,14 +1,11 @@
 package dimas.config;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -35,7 +32,7 @@ public class SpringConfig implements WebMvcConfigurer {
     private final ApplicationContext applicationContext;
     private final Environment env;
 
-    @Autowired
+
     public SpringConfig(ApplicationContext applicationContext, Environment env) {
         this.applicationContext = applicationContext;
         this.env = env;
@@ -45,8 +42,9 @@ public class SpringConfig implements WebMvcConfigurer {
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("/WEB-INF/views/");
+        templateResolver.setPrefix("/WEB-INF/pages/");
         templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;
     }
 
@@ -62,6 +60,8 @@ public class SpringConfig implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setContentType("text/html; charset=UTF-8");
         registry.viewResolver(resolver);
     }
 
@@ -78,23 +78,23 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(getDataSource());
-
         Properties props = new Properties();
-        props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-        props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-
-        em.setJpaProperties(props);
+        props.getProperty("hibernate.properties");
         em.setDataSource(getDataSource());
-        em.setPackagesToScan("dimas.model.User");
+        em.setPackagesToScan("dimas.model");
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        em.setJpaProperties(props);
         return em;
     }
+
     @Bean
-    public PlatformTransactionManager transactionManager(){
+    public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager
                 = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(
-                entityManagerFactoryBean().getObject() );
+                entityManagerFactoryBean().getObject());
         return transactionManager;
     }
+
 }

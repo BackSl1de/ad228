@@ -6,7 +6,6 @@ public class MySpringMvcDispatcherSerlvetIntitializer extends AbstractAnnotation
     protected Class<?>[] getRootConfigClasses() {
         return null;
     }
-
     protected Class<?>[] getServletConfigClasses() {
         return new Class[]{SpringConfig.class};
     }
